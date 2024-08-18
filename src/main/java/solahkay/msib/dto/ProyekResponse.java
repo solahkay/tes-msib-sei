@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import solahkay.msib.entity.Lokasi;
+
+import java.util.Set;
 
 @Getter
 @AllArgsConstructor
@@ -28,6 +29,6 @@ public class ProyekResponse {
 
     private String createdAt;
 
-    private Lokasi location;
+    private Set<LokasiResponse> lokasi;
 
 }

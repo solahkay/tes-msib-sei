@@ -2,6 +2,9 @@ package solahkay.msib.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,7 +19,9 @@ import solahkay.msib.repository.LokasiRepository;
 import solahkay.msib.repository.ProyekRepository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -59,7 +64,28 @@ public class ProyekServiceImpl implements ProyekService {
 
     @Override
     public Page<ProyekResponse> getAllProjects(int page, int size) {
-        return null;
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Proyek> projects = proyekRepository.findAll(pageable);
+        List<ProyekResponse> projectResponses = projects.getContent().stream()
+                .map(ProyekServiceImpl::toProyekResponse)
+                .toList();
+
+        return new PageImpl<>(projectResponses, pageable, projects.getTotalElements());
+    }
+
+    public static ProyekResponse toProyekResponse(Proyek proyek) {
+        return ProyekResponse.builder()
+                .id(proyek.getId())
+                .namaProyek(proyek.getNamaProyek())
+                .client(proyek.getClient())
+                .tglMulai(TimeHelper.formatToString(proyek.getTglMulai()))
+                .tglSelesai(TimeHelper.formatToString(proyek.getTglSelesai()))
+                .pimpinanProyek(proyek.getPimpinanProyek())
+                .lokasi(proyek.getLokasi().stream()
+                        .map(LokasiServiceImpl::toLokasiResponse)
+                        .collect(Collectors.toSet()))
+                .createdAt(TimeHelper.formatToString(proyek.getCreatedAt()))
+                .build();
     }
 
     @Override
@@ -71,4 +97,5 @@ public class ProyekServiceImpl implements ProyekService {
     public void deleteProject(DeleteProyekRequest request) {
 
     }
+
 }
