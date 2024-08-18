@@ -81,6 +81,7 @@ public class ProyekServiceImpl implements ProyekService {
                 .tglMulai(TimeHelper.formatToString(proyek.getTglMulai()))
                 .tglSelesai(TimeHelper.formatToString(proyek.getTglSelesai()))
                 .pimpinanProyek(proyek.getPimpinanProyek())
+                .keterangan(proyek.getKeterangan())
                 .lokasi(proyek.getLokasi().stream()
                         .map(LokasiServiceImpl::toLokasiResponse)
                         .collect(Collectors.toSet()))
@@ -90,7 +91,32 @@ public class ProyekServiceImpl implements ProyekService {
 
     @Override
     public ProyekResponse updateProject(UpdateProyekRequest request) {
-        return null;
+        validationService.validate(request);
+
+        Proyek proyek = proyekRepository.findById(request.getIdProyek())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyek tidak ditemukan"));
+
+        if (!(proyek.getNamaProyek().equalsIgnoreCase(request.getNamaProyek()))
+                && proyekRepository.existsByNamaProyek(request.getNamaProyek())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Proyek sudah ada");
+        }
+
+        proyek.setNamaProyek(request.getNamaProyek());
+        proyek.setClient(request.getClient());
+        proyek.setTglMulai(request.getTglMulai());
+        proyek.setTglSelesai(request.getTglSelesai());
+        proyek.setPimpinanProyek(request.getPimpinanProyek());
+        proyek.setKeterangan(request.getKeterangan());
+
+        Set<Lokasi> locations = request.getLokasi().stream()
+                .map(s -> lokasiRepository.findByNamaLokasi(s)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lokasi tidak ditemukan")))
+                .collect(Collectors.toSet());
+        proyek.setLokasi(locations);
+
+        proyekRepository.save(proyek);
+
+        return toProyekResponse(proyek);
     }
 
     @Override

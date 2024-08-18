@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import solahkay.msib.dto.AddProyekRequest;
 import solahkay.msib.dto.PagingResponse;
 import solahkay.msib.dto.ProyekResponse;
+import solahkay.msib.dto.UpdateProyekRequest;
 import solahkay.msib.dto.WebResponse;
 import solahkay.msib.service.ProyekService;
 
@@ -33,7 +35,6 @@ public class ProyekController {
     @ResponseStatus(HttpStatus.CREATED)
     public WebResponse<String> add(@RequestBody AddProyekRequest request) {
         proyekService.addProject(request);
-
         return WebResponse.<String>builder()
                 .message(HttpStatus.CREATED.name())
                 .build();
@@ -53,6 +54,18 @@ public class ProyekController {
                         .totalPage(projects.getTotalPages())
                         .size(projects.getSize())
                         .build())
+                .build();
+    }
+
+    @PutMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<ProyekResponse> update(@RequestBody UpdateProyekRequest request) {
+        ProyekResponse project = proyekService.updateProject(request);
+        return WebResponse.<ProyekResponse>builder()
+                .data(project)
+                .message(HttpStatus.OK.name())
                 .build();
     }
 

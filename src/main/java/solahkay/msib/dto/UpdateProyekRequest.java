@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import solahkay.msib.entity.Lokasi;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -24,13 +23,17 @@ public class UpdateProyekRequest {
 
     @NotBlank
     @Size(min = 1, max = 255)
+    private String namaProyek;
+
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String client;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime tglMulai;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String tglSelesai;
+    private LocalDateTime tglSelesai;
 
     @NotBlank
     @Size(min = 1, max = 255)
@@ -39,6 +42,6 @@ public class UpdateProyekRequest {
     private String keterangan;
 
     @NotNull
-    private Set<Lokasi> lokasi;
+    private Set<String> lokasi;
 
 }
