@@ -72,7 +72,23 @@ public class LokasiServiceImpl implements LokasiService {
 
     @Override
     public LokasiResponse updateLocation(UpdateLokasiRequest request) {
-        return null;
+        validationService.validate(request);
+
+        Lokasi location = lokasiRepository.findById(request.getIdLokasi())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lokasi tidak ditemukan"));
+
+        if (!location.getNamaLokasi().equalsIgnoreCase(request.getNamaLokasi())
+                && lokasiRepository.existsByNamaLokasi(request.getNamaLokasi())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Lokasi sudah ada");
+        }
+
+        location.setNamaLokasi(request.getNamaLokasi());
+        location.setNegara(request.getNegara());
+        location.setProvinsi(request.getProvinsi());
+        location.setKota(request.getKota());
+        lokasiRepository.save(location);
+
+        return toLokasiResponse(location);
     }
 
     @Override
