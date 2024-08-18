@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import solahkay.msib.dto.AddProyekRequest;
 import solahkay.msib.dto.DeleteProyekRequest;
@@ -34,6 +35,7 @@ public class ProyekServiceImpl implements ProyekService {
     private final ValidationService validationService;
 
     @Override
+    @Transactional
     public void addProject(AddProyekRequest request) {
         validationService.validate(request);
         if (proyekRepository.existsByNamaProyek(request.getNamaProyek())) {
@@ -63,6 +65,7 @@ public class ProyekServiceImpl implements ProyekService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ProyekResponse> getAllProjects(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Proyek> projects = proyekRepository.findAll(pageable);
@@ -90,13 +93,14 @@ public class ProyekServiceImpl implements ProyekService {
     }
 
     @Override
+    @Transactional
     public ProyekResponse updateProject(UpdateProyekRequest request) {
         validationService.validate(request);
 
         Proyek proyek = proyekRepository.findById(request.getIdProyek())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyek tidak ditemukan"));
 
-        if (!(proyek.getNamaProyek().equalsIgnoreCase(request.getNamaProyek()))
+        if (!proyek.getNamaProyek().equalsIgnoreCase(request.getNamaProyek())
                 && proyekRepository.existsByNamaProyek(request.getNamaProyek())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Proyek sudah ada");
         }
@@ -120,8 +124,15 @@ public class ProyekServiceImpl implements ProyekService {
     }
 
     @Override
+    @Transactional
     public void deleteProject(DeleteProyekRequest request) {
+        validationService.validate(request);
 
+        if (!proyekRepository.existsById(request.getIdProyek())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyek tidak ditemukan");
+        }
+
+        proyekRepository.deleteById(request.getIdProyek());
     }
 
 }

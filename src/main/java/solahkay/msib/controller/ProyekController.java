@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import solahkay.msib.dto.AddProyekRequest;
+import solahkay.msib.dto.DeleteProyekRequest;
 import solahkay.msib.dto.PagingResponse;
 import solahkay.msib.dto.ProyekResponse;
 import solahkay.msib.dto.UpdateProyekRequest;
@@ -65,6 +67,17 @@ public class ProyekController {
         ProyekResponse project = proyekService.updateProject(request);
         return WebResponse.<ProyekResponse>builder()
                 .data(project)
+                .message(HttpStatus.OK.name())
+                .build();
+    }
+
+    @DeleteMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(@RequestBody DeleteProyekRequest request) {
+        proyekService.deleteProject(request);
+        return WebResponse.<String>builder()
                 .message(HttpStatus.OK.name())
                 .build();
     }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import solahkay.msib.dto.AddLokasiRequest;
 import solahkay.msib.dto.DeleteLokasiRequest;
@@ -30,6 +31,7 @@ public class LokasiServiceImpl implements LokasiService {
     private final ValidationService validationService;
 
     @Override
+    @Transactional
     public void addLocation(AddLokasiRequest request) {
         validationService.validate(request);
         if (lokasiRepository.existsByNamaLokasi(request.getNamaLokasi())) {
@@ -50,6 +52,7 @@ public class LokasiServiceImpl implements LokasiService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<LokasiResponse> getAllLocations(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Lokasi> locations = lokasiRepository.findAll(pageable);
@@ -72,6 +75,7 @@ public class LokasiServiceImpl implements LokasiService {
     }
 
     @Override
+    @Transactional
     public LokasiResponse updateLocation(UpdateLokasiRequest request) {
         validationService.validate(request);
 
@@ -93,6 +97,7 @@ public class LokasiServiceImpl implements LokasiService {
     }
 
     @Override
+    @Transactional
     public void deleteLocation(DeleteLokasiRequest request) {
         validationService.validate(request);
 
