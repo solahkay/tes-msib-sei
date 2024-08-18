@@ -27,7 +27,7 @@ public class Proyek {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "nama_proyek", nullable = false)
+    @Column(name = "nama_proyek", unique = true, nullable = false)
     private String namaProyek;
 
     @Column(name = "client", nullable = false)
