@@ -1,12 +1,15 @@
 package solahkay.msib.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import solahkay.msib.dto.AddLokasiRequest;
 import solahkay.msib.dto.LokasiResponse;
-import solahkay.msib.dto.PagingResponse;
 import solahkay.msib.dto.UpdateLokasiRequest;
 import solahkay.msib.entity.Lokasi;
 import solahkay.msib.entity.Proyek;
@@ -14,6 +17,7 @@ import solahkay.msib.helper.TimeHelper;
 import solahkay.msib.repository.LokasiRepository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -31,7 +35,7 @@ public class LokasiServiceImpl implements LokasiService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Lokasi sudah ada");
         }
 
-        Lokasi lokasi = Lokasi.builder()
+        Lokasi location = Lokasi.builder()
                 .namaLokasi(request.getNamaLokasi())
                 .negara(request.getNegara())
                 .provinsi(request.getProvinsi())
@@ -39,19 +43,31 @@ public class LokasiServiceImpl implements LokasiService {
                 .createdAt(TimeHelper.getFormattedLocalDateTimeNow())
                 .build();
         Set<Proyek> proyekSet = new HashSet<>();
-        lokasi.setProyek(proyekSet);
+        location.setProyek(proyekSet);
 
-        lokasiRepository.save(lokasi);
+        lokasiRepository.save(location);
     }
 
     @Override
-    public LokasiResponse getLocation(Integer id) {
-        return null;
+    public Page<LokasiResponse> getAllLocations(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Lokasi> locations = lokasiRepository.findAll(pageable);
+        List<LokasiResponse> locationResponses = locations.getContent().stream()
+                .map(LokasiServiceImpl::toLokasiResponse)
+                .toList();
+
+        return new PageImpl<>(locationResponses, pageable, locations.getTotalElements());
     }
 
-    @Override
-    public PagingResponse getAllLocations(int page, int size) {
-        return null;
+    public static LokasiResponse toLokasiResponse(Lokasi lokasi) {
+        return LokasiResponse.builder()
+                .id(lokasi.getId())
+                .namaLokasi(lokasi.getNamaLokasi())
+                .negara(lokasi.getNegara())
+                .provinsi(lokasi.getProvinsi())
+                .kota(lokasi.getKota())
+                .createdAt(TimeHelper.formatToString(lokasi.getCreatedAt()))
+                .build();
     }
 
     @Override
