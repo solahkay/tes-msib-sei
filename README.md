@@ -1,6 +1,4 @@
-
-
-Internship test MSIB Batch 7 PT. Surya Energi Indotama
+# Internship test MSIB Batch 7 PT. Surya Energi Indotama
 
 ## Tech Stack
 - Java
