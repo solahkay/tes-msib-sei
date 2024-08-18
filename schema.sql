@@ -1,7 +1,7 @@
 CREATE TABLE proyek
 (
     id              SERIAL PRIMARY KEY,
-    nama_proyek     VARCHAR(255) NOT NULL UNIQUE ,
+    nama_proyek     VARCHAR(255) NOT NULL UNIQUE,
     client          VARCHAR(255) NOT NULL,
     tgl_mulai       TIMESTAMP,
     tgl_selesai     TIMESTAMP,
@@ -13,7 +13,7 @@ CREATE TABLE proyek
 CREATE TABLE lokasi
 (
     id          SERIAL PRIMARY KEY,
-    nama_lokasi VARCHAR(255) NOT NULL,
+    nama_lokasi VARCHAR(255) NOT NULL UNIQUE,
     negara      VARCHAR(255) NOT NULL,
     provinsi    VARCHAR(255) NOT NULL,
     kota        VARCHAR(255) NOT NULL,
