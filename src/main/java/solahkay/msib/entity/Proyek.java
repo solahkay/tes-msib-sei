@@ -9,7 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,10 +34,10 @@ public class Proyek {
     private String client;
 
     @Column(name = "tgl_mulai")
-    private Timestamp tglMulai;
+    private LocalDateTime tglMulai;
 
     @Column(name = "tgl_selesai")
-    private Timestamp tglSelesai;
+    private LocalDateTime tglSelesai;
 
     @Column(name = "pimpinan_proyek", nullable = false)
     private String pimpinanProyek;
@@ -46,7 +46,7 @@ public class Proyek {
     private String keterangan;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @ManyToMany
     @JoinTable(

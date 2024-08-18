@@ -1,10 +1,21 @@
 package solahkay.msib.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -22,7 +33,7 @@ public class Lokasi {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "nama_lokasi", nullable = false)
+    @Column(name = "nama_lokasi",unique = true, nullable = false)
     private String namaLokasi;
 
     @Column(name = "negara", nullable = false)
@@ -35,7 +46,7 @@ public class Lokasi {
     private String kota;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @ManyToMany(mappedBy = "lokasi")
     @ToString.Exclude
