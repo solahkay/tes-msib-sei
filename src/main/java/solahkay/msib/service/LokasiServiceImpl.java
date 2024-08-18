@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import solahkay.msib.dto.AddLokasiRequest;
+import solahkay.msib.dto.DeleteLokasiRequest;
 import solahkay.msib.dto.LokasiResponse;
 import solahkay.msib.dto.UpdateLokasiRequest;
 import solahkay.msib.entity.Lokasi;
@@ -92,8 +93,14 @@ public class LokasiServiceImpl implements LokasiService {
     }
 
     @Override
-    public void deleteLocation(Integer id) {
+    public void deleteLocation(DeleteLokasiRequest request) {
+        validationService.validate(request);
 
+        if (!lokasiRepository.existsById(request.getIdLokasi())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lokasi tidak ditemukan");
+        }
+
+        lokasiRepository.deleteById(request.getIdLokasi());
     }
 
 }

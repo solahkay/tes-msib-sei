@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import solahkay.msib.dto.AddLokasiRequest;
+import solahkay.msib.dto.DeleteLokasiRequest;
 import solahkay.msib.dto.LokasiResponse;
 import solahkay.msib.dto.PagingResponse;
 import solahkay.msib.dto.UpdateLokasiRequest;
@@ -63,6 +65,17 @@ public class LokasiController {
         LokasiResponse response = lokasiService.updateLocation(request);
         return WebResponse.<LokasiResponse>builder()
                 .data(response)
+                .message(HttpStatus.OK.getReasonPhrase())
+                .build();
+    }
+
+    @DeleteMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(@RequestBody DeleteLokasiRequest request) {
+        lokasiService.deleteLocation(request);
+        return WebResponse.<String>builder()
                 .message(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
